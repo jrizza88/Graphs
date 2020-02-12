@@ -13,13 +13,20 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        self.vertices[vertex_id] = set()
+        #pass  # TODO
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        #self.vertices[v1].add(v2)
+        # this helps to check
+        if v1 in self.vertices and v2 in self.vertices:
+            self.vertices[v1].add[v2]
+        else:
+            raise IndexError("That vertex does not exists")
+        #pass  # TODO
 
     def get_neighbors(self, vertex_id):
         """
@@ -32,13 +39,54 @@ class Graph:
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+    ## This whole thing takes the FIFO idea! First in First Out
+        #pass  # TODO
+        # algorithm 
+        # they will not hold true? necessarily
+        # algorithm will hold true!
+
+        ## Create an empty queue and enqueue the starting vertex ID
+        q = Queue()
+        q.enqueue(starting_vertex)
+        ## Create an empty Set to store visited vertices
+        visited = set()
+        # visited = {1}
+        # visited = {1, 2}
+        ## While the queue is not empty...
+        while q.size() > 0: 
+            # Dequeue the first vertex
+            v = q.dequeue()
+            # If that vertex has not ben visited...
+            if v not in visited:
+                # Mark it as visited.
+                print(v)
+                visited.add(v)
+                # Then add all of its neighbors to the back of the queue
+                for neighbor in self.vertices[v]:
+                    q.enqueue(neighbor)
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
+        ## Create an empty stack and push the starting vertex ID
+        s = Stack()
+        s.push(starting_vertex)
+        ## Create an empty Set to store visited vertices
+        visited = set()
+        ## While the stack is not empty...
+        while s.size() > 0: 
+            # Pop the first vertex
+            v = s.pop()
+            # If that vertex has not bexsen visited...
+            if v not in visited:
+                # Mark it as visited.
+                print(v)
+                visited.add(v)
+                # Then add all of its neighbors (push) to the top of the stack
+                for neighbor in self.vertices[v]:
+                    s.push(neighbor)
         pass  # TODO
 
     def dft_recursive(self, starting_vertex):
@@ -118,6 +166,7 @@ if __name__ == '__main__':
         1, 2, 4, 3, 7, 6, 5
         1, 2, 4, 3, 7, 5, 6
     '''
+    print(graph.bft(1))
     graph.bft(1)
 
     '''
