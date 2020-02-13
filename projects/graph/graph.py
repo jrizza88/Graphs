@@ -143,11 +143,11 @@ class Graph:
                # copy_path.add(path)
         ## for each one, add a PATH TO IT to our queue
                 for edge in edges:
-                    #copy_path = path[:]
+                    
                     copy_path = path.copy()
                     copy_path.append(edge)
                     queue.enqueue(copy_path)
-        return[]
+        return 
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -155,7 +155,31 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        stack = Stack()
+
+        visited = set()
+        
+        stack.push([starting_vertex])
+
+        while stack.size() > 0:
+
+            path = stack.pop()
+
+            current_node = path[-1]
+
+            if current_node == destination_vertex:
+                return path
+            
+            if current_node is not visited:
+                visited.add(current_node)
+
+                edges = self.get_neighbors(current_node)
+
+                for edge in edges:
+                    current_path = edge[:]
+                    current_path.append(edge)
+                    stack.push(current_path)
+
 
     def dfs_recursive(self, starting_vertex):
         """
@@ -211,6 +235,7 @@ if __name__ == '__main__':
     '''
     print(graph.bft(1))
     graph.bft(1)
+  
 
     '''
     Valid DFT paths:
@@ -220,6 +245,7 @@ if __name__ == '__main__':
         1, 2, 4, 6, 3, 5, 7
     '''
     graph.dft(1)
+    print('graph.dft(1): ', graph.dft(1))
     graph.dft_recursive(1)
 
     '''
