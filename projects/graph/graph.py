@@ -23,7 +23,7 @@ class Graph:
         #self.vertices[v1].add(v2)
         # this helps to check
         if v1 in self.vertices and v2 in self.vertices:
-            self.vertices[v1].add[v2]
+            self.vertices[v1].add(v2)
         else:
             raise IndexError("That vertex does not exists")
         #pass  # TODO
@@ -80,13 +80,13 @@ class Graph:
         ## Create an empty stack and push the starting vertex ID
         s = Stack()
         s.push(starting_vertex)
-        ## Create an empty Set to store visited vertices
+        ## make a set for the visited vertices
         visited = set()
-        ## While the stack is not empty...
+        ## While the stack is not empty... we have more ppl to visit
         while s.size() > 0: 
             # Pop the first vertex
             v = s.pop()
-            # If that vertex has not bexsen visited...
+            # Check if the vertex has been visited...
             if v not in visited:
                 # Mark it as visited.
                 print(v)
@@ -96,14 +96,30 @@ class Graph:
                     s.push(neighbor)
         #pass  # TODO
 
-    def dft_recursive(self, starting_vertex):
+        ## why can't we do bft recursively?
+
+    def dft_recursive(self, vertex, visited=set()):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
 
         This should be done using recursion.
         """
-        pass  # TODO
+        visited.add(vertex)
+
+        edges = self.get_neighbors(vertex)
+
+
+        if len(edges) == 0:
+            return
+
+        else:
+            for edge in edges:
+                if edge not in visited:
+                    self.dft_recursive(edge, visited)
+                else:
+                    return
+
 
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -124,7 +140,7 @@ class Graph:
 
             path = queue.dequeue()
             ## current_node is the last thing in the path
-            ## -1 helps to get the last instance
+            ## -1 helps to get the last instance from path
             current_node = path[-1]
             ## check if it's the target, aka the destination_vertex
             ## if so, return the path!!
@@ -145,6 +161,7 @@ class Graph:
                 for edge in edges:
                     
                     copy_path = path.copy()
+                    ## alt way copy_path = len(path)
                     copy_path.append(edge)
                     queue.enqueue(copy_path)
         return 
@@ -176,12 +193,12 @@ class Graph:
                 edges = self.get_neighbors(current_node)
 
                 for edge in edges:
-                    current_path = edge[:]
+                    current_path = path[:]
                     current_path.append(edge)
                     stack.push(current_path)
+        return 
 
-
-    def dfs_recursive(self, starting_vertex):
+    def dfs_recursive(self, starting_vertex, destination_vertex, visited=set(), path=None):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -189,7 +206,30 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+        if path is None:
+            path = []
+
+        visited.add(starting_vertex)
+        
+        path = path + [starting_vertex]  
+
+
+
+        if starting_vertex == destination_vertex:
+            return path
+
+        edges = self.get_neighbors(starting_vertex) 
+        if len(edges) == 0:
+            return
+
+        for edge in edges:
+            if edge not in visited:
+                new_edge = self.dfs_recursive(edge, destination_vertex, visited, path)
+                print('dfs recurisve: ', new_edge )
+                if new_edge:
+                    return new_edge
+        return None
+
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
@@ -201,16 +241,16 @@ if __name__ == '__main__':
     graph.add_vertex(5)
     graph.add_vertex(6)
     graph.add_vertex(7)
-    #graph.add_edge(5, 3)
-   # graph.add_edge(6, 3)
-    #graph.add_edge(7, 1)
-    #graph.add_edge(4, 7)
-    #graph.add_edge(1, 2)
-    #graph.add_edge(7, 6)
-    #graph.add_edge(2, 4)
-    #graph.add_edge(3, 5)
-    #graph.add_edge(2, 3)
-    #graph.add_edge(4, 6)
+    graph.add_edge(5, 3)
+    graph.add_edge(6, 3)
+    graph.add_edge(7, 1)
+    graph.add_edge(4, 7)
+    graph.add_edge(1, 2)
+    graph.add_edge(7, 6)
+    graph.add_edge(2, 4)
+    graph.add_edge(3, 5)
+    graph.add_edge(2, 3)
+    graph.add_edge(4, 6)
 
     '''
     Should print:
@@ -260,4 +300,5 @@ if __name__ == '__main__':
         [1, 2, 4, 7, 6]
     '''
     print(graph.dfs(1, 6))
-    print(graph.dfs_recursive(1, 6))
+    print('recursion', graph.dfs_recursive(1, 6))
+    
