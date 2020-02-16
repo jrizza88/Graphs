@@ -212,7 +212,7 @@ class Graph:
         visited.add(starting_vertex)
         
         path = path + [starting_vertex]  
-
+        #path += [starting_vertex]
 
 
         if starting_vertex == destination_vertex:
