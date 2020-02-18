@@ -7,11 +7,8 @@ class Graph:
         self.vertices = {}
 
     def add_vertex(self, vertex_id):
-        """
-        Add a vertex to the graph.
-        """
-        self.vertices[vertex_id] = set()
-        #pass  # TODO
+        if vertex_id not in self.vertices:
+            self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
         """
@@ -23,7 +20,6 @@ class Graph:
             self.vertices[v1].add(v2)
         else:
             raise IndexError("That vertex does not exists")
-        
 
 def earliest_ancestor(ancestors, starting_node):
     graph = Graph()
@@ -52,7 +48,7 @@ def earliest_ancestor(ancestors, starting_node):
         # getting the last instance of the path 
         value = node_path[-1]
 
-        if (len(node_path) >= ancestor_length and value < root_ancestor) or (len(node_path) > ancestor_length):
+        if (value < root_ancestor) or (len(node_path) > ancestor_length):
             print('node_path', node_path)
             root_ancestor = value
             ancestor_length = len(node_path)
