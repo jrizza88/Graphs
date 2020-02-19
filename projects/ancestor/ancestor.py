@@ -1,5 +1,4 @@
 from util import Queue
-
 class Graph:
 
     """Represent a graph as a dictionary of vertices mapping labels to edges."""
@@ -9,7 +8,7 @@ class Graph:
     def add_vertex(self, vertex_id):
         if vertex_id not in self.vertices:
             self.vertices[vertex_id] = set()
-
+    
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
@@ -48,7 +47,7 @@ def earliest_ancestor(ancestors, starting_node):
         # getting the last instance of the path 
         value = node_path[-1]
 
-        if (value < root_ancestor) or (len(node_path) > ancestor_length):
+        if value < root_ancestor or len(node_path) > ancestor_length:
             print('node_path', node_path)
             root_ancestor = value
             ancestor_length = len(node_path)
