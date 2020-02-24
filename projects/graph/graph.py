@@ -57,7 +57,7 @@ class Graph:
         while q.size() > 0: 
             # Dequeue the first vertex
             current_node = q.dequeue()
-            # If that vertex has not ben visited...
+            # If that vertex has not been visited...
             if current_node not in visited:
                 # Mark it as visited.
                 print(current_node)

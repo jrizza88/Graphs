@@ -1,6 +1,7 @@
 from room import Room
 from player import Player
 from world import World
+from queue import Queue
 
 import random
 from ast import literal_eval
@@ -28,6 +29,7 @@ player = Player(world.starting_room)
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
 traversal_path = []
+#reversing directions
 
 
 
@@ -35,6 +37,11 @@ traversal_path = []
 visited_rooms = set()
 player.current_room = world.starting_room
 visited_rooms.add(player.current_room)
+
+def opposite_dirs(direction):
+    reverse_directions = {'n': 's', 's': 'n', 'e': 'w', 'w': 'e'} 
+    print('opposite_directions', reverse_directions[direction])
+    return reverse_directions[direction]
 
 for move in traversal_path:
     player.travel(move)

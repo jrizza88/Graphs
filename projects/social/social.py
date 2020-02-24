@@ -1,5 +1,18 @@
 import random
-from util import Queue
+import time
+
+class Queue():
+    def __init__(self):
+        self.queue = []
+    def enqueue(self, value):
+        self.queue.append(value)
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
+        else:
+            return None
+    def size(self):
+        return len(self.queue)
 
 class User:
     def __init__(self, name):
@@ -16,12 +29,15 @@ class SocialGraph:
         Creates a bi-directional friendship
         """
         if user_id == friend_id:
-            print("WARNING: You cannot be friends with yourself")
+            # print("WARNING: You cannot be friends with yourself")
+            return False
         elif friend_id in self.friendships[user_id] or user_id in self.friendships[friend_id]:
-            print("WARNING: Friendship already exists")
+            # print("WARNING: Friendship already exists")
+            return False
         else:
             self.friendships[user_id].add(friend_id)
             self.friendships[friend_id].add(user_id)
+            return True
 
     def add_user(self, name):
         """
@@ -45,32 +61,64 @@ class SocialGraph:
         self.last_id = 0
         self.users = {}
         self.friendships = {}
-        # !!!! IMPLEMENT ME
 
         # Add users
         for user in range(num_users):
-            # passing in user into add_user
             self.add_user(user)
 
         # Create friendships
 
-        ## Create a list with all possible friendships
+        ## create a list with all possible friendships
         possible_friendships = []
-        
-        for user in range(1, self.last_id + 1):
+        for user in range(1, self.last_id + 1): # + 1 so we include self.last_id
             for friend in range(user + 1, self.last_id + 1):
                 possible_friendship = (user, friend)
                 possible_friendships.append(possible_friendship)
-           # (1, 2), (1, 3), (1, 4), (2, 3), (2, 4), (3,4)
+
         ## then shuffle it randomly
         random.shuffle(possible_friendships)
+
         ## and only take as many as we need,
-        total_friendships = num_users * avg_friendships // 2 # because each friendship is bidirectional, so we only call the function half of the time
-        random_friendships = possible_friendships[:total_friendships]
+        total_friendships = num_users * avg_friendships
+        number_of_friend_pairs_needed = total_friendships // 2
+        random_friendships = possible_friendships[:number_of_friend_pairs_needed]
+
         ## and add those friendships
         for friendship in random_friendships:
             self.add_friendship(friendship[0], friendship[1])
 
+
+    def populate_graph_linear(self, num_users, avg_friendships):
+        # Reset graph
+        self.last_id = 0
+        self.users = {}
+        self.friendships = {}
+
+        # Add users
+        for user in range(num_users):
+            self.add_user(user)
+
+        target_friendships = num_users * avg_friendships
+        friendships_successfully_added = 0
+        failures = 0
+
+        # continue this until we have as many friendships as we need:
+        while friendships_successfully_added < target_friendships:
+        ## choose two random numbers (integers) between 1 and self.last_id
+            user_id = random.randint(1, self.last_id)
+            friend_id = random.randint(1, self.last_id)
+
+            ## try to make that friendship!
+            added_friendship = self.add_friendship(user_id, friend_id)
+
+            ## if it works, increment the friendship counter
+            if added_friendship:
+                friendships_successfully_added += 2
+            else:
+                failures += 1
+
+    def get_friendships(self, user_id):
+        return self.friendships[user_id]
 
     def get_all_social_paths(self, user_id):
         """
@@ -82,17 +130,51 @@ class SocialGraph:
         The key is the friend's ID and the value is the path.
         """
         visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
-        # get all the friends of the user
+
         queue = Queue()
-        queue.enqueue(used_id)
-        
+
+        path = [user_id]
+        queue.enqueue(path)
+
+        while queue.size() > 0:
+
+            current_path = queue.dequeue()
+            new_user_id = current_path[-1]
+
+            if new_user_id not in visited:
+                visited[new_user_id] = current_path
+
+                friends = self.get_friendships(new_user_id)
+                for friend in friends:
+                    path_copy = list(current_path)
+                    path_copy.append(friend)
+                    queue.enqueue(path_copy)
+
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
-    print(sg.friendships)
-    connections = sg.get_all_social_paths(1)
-    print(connections)
+
+    num_users = 2000
+    avg_friendships = 1000
+
+    start_time = time.time()
+    sg.populate_graph(num_users, avg_friendships)
+    end_time = time.time()
+    total_time = end_time - start_time
+    print(f"Quadratic time: {total_time} seconds")
+
+    start_time = time.time()
+    sg.populate_graph_linear(num_users, avg_friendships)
+    end_time = time.time()
+    total_time = end_time - start_time
+    print(f"Linear time: {total_time} seconds")
+
+    # connections = sg.get_all_social_paths(1)
+    # total_paths_length = 0
+    # for user_id in connections:
+    #     total_paths_length += len(connections[user_id])
+    # average_degree_of_separation = total_paths_length / len(connections)
+
+    # print(average_degree_of_separation)
